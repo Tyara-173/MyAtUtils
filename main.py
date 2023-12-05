@@ -4,8 +4,8 @@ import pyperclip
 utils = {
     'graph_1':
         '''
-            int n = 10;
-            int m = 10;
+            int n = in.nextInt();
+            int m = in.nextInt();
             List<List<Integer>> e = new ArrayList<>();
             boolean[] a = new boolean[n];
         
@@ -14,8 +14,8 @@ utils = {
                     e.add(new ArrayList<>());
                 }
                 for (int i = 0; i < m; i++) {
-                    int u = 0;
-                    int v = 0;
+                    int u = in.nextInt()-1;
+                    int v = in.nextInt()-1;
                     e.get(u).add(v);
                     e.get(v).add(u);
                 }
@@ -23,8 +23,8 @@ utils = {
         ''',
     'graph_2':
         '''
-            int n = 10;
-            int m = 10;
+            int n = in.nextInt();
+            int m = in.nextInt();
             List<List<LongPair>> e = new ArrayList<>();
             boolean[] a = new boolean[n];
         
