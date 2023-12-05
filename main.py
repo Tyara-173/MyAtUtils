@@ -48,6 +48,38 @@ utils = {
                 }
             }
         ''',
+    'neighbor4':
+        '''
+            List<IntPair> neighbor4(int y, int x, int h, int w){
+                int[] yy = {1, 0,-1, 0};
+                int[] xx = {0, 1, 0,-1};
+                List<IntPair> list = new ArrayList<>();
+                for (int i = 0; i < 8; i++) {
+                    int ny = y + yy[i];
+                    int nx = x + xx[i];
+                    if(ny >= 0 && ny < h && nx >= 0 && nx < w){
+                        list.add(new IntPair(ny,nx));
+                    }
+                }
+                return list;
+            }
+        ''',
+    'neighbor8':
+        '''
+            List<IntPair> neighbor8(int y, int x, int h, int w){
+                int[] yy = {1,1,0,-1,-1,-1, 0, 1};
+                int[] xx = {0,1,1, 1, 0,-1,-1,-1};
+                List<IntPair> list = new ArrayList<>();
+                for (int i = 0; i < 8; i++) {
+                    int ny = y + yy[i];
+                    int nx = x + xx[i];
+                    if(ny >= 0 && ny < h && nx >= 0 && nx < w){
+                        list.add(new IntPair(ny,nx));
+                    }
+                }
+                return list;
+            }
+        ''',
     'lcm':
         '''
             long lcm(long a,long b){
@@ -140,6 +172,108 @@ utils = {
                 return right;
             }
         ''',
+    'pair':
+        '''
+            class Pair<T>{
+                T f;
+                T s;
+                Pair(T f,T s){
+                    this.f = f;
+                    this.s = s;
+                }
+            }
+        ''',
+    'intPair':
+        '''
+            class IntPair implements Comparable<IntPair>{
+                int f;
+                int s;
+                IntPair(int f,int s){
+                    this.f = f;
+                    this.s = s;
+                }
+            
+                @Override
+                public int compareTo(IntPair o) {
+                    return o.f == this.f ? Integer.compare(o.s,this.s) : Integer.compare(o.f,this.f);
+                }
+            }
+        ''',
+    'longPair':
+        '''
+            class LongPair implements Comparable<LongPair>{
+                long f;
+                long s;
+                LongPair(long f,long s){
+                    this.f = f;
+                    this.s = s;
+                }
+            
+                @Override
+                public int compareTo(LongPair o) {
+                    return o.f == this.f ? Long.compare(o.s,this.s) : Long.compare(o.f,this.f);
+                }
+            }
+        ''',
+    'segTree':
+        '''
+            class SegmentTree{
+                private final int size;
+                private final long[] dat;
+                SegmentTree(int size,long[] a){
+                    this.dat = new long[size*4];
+                    int x = 1;
+                    while (x < size){
+                        x *= 2;
+                    }
+                    this.size = x;
+                    for (int i = 0; i < size; i++) {
+                        update(i,a[i]);
+                    }
+                }
+            
+                void update(int index,long x){
+                    int i = index;
+                    i += size-1;
+                    dat[i] = x;
+                    while (i > 0) {
+                        i = (i - 1) / 2;
+                        dat[i] = Math.min(dat[i * 2 + 1] , dat[i * 2 + 2]);
+                    }
+                }
+            
+                long query(int a,int b){
+                    return query(a,b,0,0,size);
+                }
+            
+                long query(int a,int b,int k,int l,int r){
+                    if(r <= a || b <= l){
+                        return 0;
+                    }
+                    if(a <= l && r <= b){
+                        return dat[k];
+                    }
+                    long vl = query(a,b,k*2+1,l,(l+r)/2);
+                    long vr = query(a,b,k*2+2,(l+r)/2,r);
+                    return Math.min(vl, vr);
+                }
+                List<List<Long>> getDat(){
+                    int x = 1;
+                    int index = 0;
+                    List<List<Long>> lists = new ArrayList<>();
+                    while (x <= size){
+                        List<Long> list = new ArrayList<>();
+                        for (int i = 0; i < x; i++) {
+                            list.add(dat[index]);
+                            index++;
+                        }
+                        lists.add(list);
+                        x *= 2;
+                    }
+                    return lists;
+                }
+            }
+        ''',
 }
 
 
@@ -148,21 +282,6 @@ def copy(str):
     print(str)
 
 
-with ui.card():
-    ui.label('グラフアルゴリズム')
-    with ui.row():
-        ui.button('Util', on_click=lambda: copy('graph'))
-        ui.button('dfs', on_click=lambda: copy('dfs'))
-        ui.button('bfs', on_click=lambda: copy('bfs'))
-        ui.button('Dijkstra', on_click=lambda: copy('bfs'))
-
-with ui.card():
-    ui.label('数学系')
-    with ui.row():
-        ui.button('lcm', on_click=lambda: copy('lcm'))
-        ui.button('arraylcm', on_click=lambda: copy('arraylcm'))
-        ui.button('gcd', on_click=lambda: copy('gcd'))
-        ui.button('arraygcd', on_click=lambda: copy('arraygcd'))
 
 with ui.card():
     ui.label('探索')
@@ -171,5 +290,33 @@ with ui.card():
         ui.button('にぶたん_lower', on_click=lambda: copy('lowerBound'))
         ui.button('にぶたん_upper', on_click=lambda: copy('upperBound'))
 
+with ui.card():
+    ui.label('グラフアルゴリズム')
+    with ui.row():
+        ui.button('Input', on_click=lambda: copy('graph'))
+        ui.button('dfs', on_click=lambda: copy('dfs'))
+        ui.button('bfs', on_click=lambda: copy('bfs'))
+        ui.button('Dijkstra', on_click=lambda: copy('bfs'))
+    with ui.row():
+        ui.button('隣のマス_4', on_click=lambda: copy('neighbor4'))
+        ui.button('隣のマス_8', on_click=lambda: copy('neighbor8'))
+
+
+with ui.card():
+    ui.label('データ構造')
+    with ui.row():
+        ui.button('Pair', on_click=lambda: copy('pair'))
+        ui.button('IntPair', on_click=lambda: copy('intPair'))
+        ui.button('LongPair', on_click=lambda: copy('longPair'))
+    with ui.row():
+        ui.button('セグ木', on_click=lambda: copy('segTree'))
+
+with ui.card():
+    ui.label('数学系')
+    with ui.row():
+        ui.button('lcm', on_click=lambda: copy('lcm'))
+        ui.button('arraylcm', on_click=lambda: copy('arraylcm'))
+        ui.button('gcd', on_click=lambda: copy('gcd'))
+        ui.button('arraygcd', on_click=lambda: copy('arraygcd'))
 
 ui.run()
