@@ -98,16 +98,48 @@ utils = {
         ''',
     'bit':
         '''
-        for (int i = 0; i < 1 << n; i++) {
-            for (int j = 0; j < n; j++) {
-                if(((i >> j) & 1) == 1){
-
-                }else{
-
+            for (int i = 0; i < 1 << n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if(((i >> j) & 1) == 1){
+    
+                    }else{
+    
+                    }
                 }
             }
-        }
-    '''
+        ''',
+    'lowerBound':
+        '''
+            int lowerBound(long[] a,long x){
+                int left = -1;
+                int right = a.length;
+                while (right - left > 1){
+                    int mid = (right + left) / 2;
+                    if(a[mid] < x){
+                        left = mid;
+                    }else{
+                        right = mid;
+                    }
+                }
+                return right;
+            }
+        ''',
+    'upeerBound':
+        '''
+            int upperBound(long[] a,long x){
+                int left = -1;
+                int right = a.length;
+                while (right - left > 1){
+                    int mid = (right + left) / 2;
+                    if(a[mid] <= x){
+                        left = mid;
+                    }else{
+                        right = mid;
+                    }
+                }
+                return right;
+            }
+        ''',
 }
 
 
@@ -131,5 +163,13 @@ with ui.card():
         ui.button('arraylcm', on_click=lambda: copy('arraylcm'))
         ui.button('gcd', on_click=lambda: copy('gcd'))
         ui.button('arraygcd', on_click=lambda: copy('arraygcd'))
+
+with ui.card():
+    ui.label('探索')
+    with ui.row():
+        ui.button('bit全探索', on_click=lambda: copy('bit'))
+        ui.button('にぶたん_lower', on_click=lambda: copy('lowerBound'))
+        ui.button('にぶたん_upper', on_click=lambda: copy('upperBound'))
+
 
 ui.run()
