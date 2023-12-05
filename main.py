@@ -200,7 +200,7 @@ utils = {
                 return right;
             }
         ''',
-    'upeerBound':
+    'upperBound':
         '''
             int upperBound(long[] a,long x){
                 int left = -1;
@@ -328,6 +328,43 @@ utils = {
                 return b;
             }
         ''',
+    'cumul2':
+        '''
+            long[][] cumulativeSum2(long[][] a){
+                int n = a.length;
+                int m = a[0].length;
+                long[][] b = new long[n+1][m+1];
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        b[i][j] = b[i][j-1] + a[i-1][j-1];
+                    }
+                }
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        b[i][j] += b[i-1][j];
+                    }
+                }
+                return b;
+            }
+        ''',
+    'mapUtil':
+        '''    
+            Map<Long,Integer> typeMap(long[] arr){
+                Map<Long,Integer> map = new HashMap<>();
+                for (long value : arr) {
+                    add(map,value);
+                }
+                return map;
+            }
+        
+            void add(Map<Long,Integer> map,long value){
+                if(map.containsKey(value)){
+                    map.put(value,map.get(value) + 1);
+                }else{
+                    map.put(value,1);
+                }
+            }
+        ''',
 }
 
 
@@ -348,12 +385,12 @@ with ui.card():
         ui.button('Input_重みなし', on_click=lambda: copy('graph_1'))
         ui.button('Input_重みあり', on_click=lambda: copy('graph_2'))
     with ui.row():
-        ui.button('dfs', on_click=lambda: copy('dfs'))
-        ui.button('bfs', on_click=lambda: copy('bfs'))
-        ui.button('Dijkstra', on_click=lambda: copy('dijkstra'))
+        ui.button('DFS', on_click=lambda: copy('dfs'))
+        ui.button('BFS', on_click=lambda: copy('bfs'))
+        ui.button('ダイクストラ', on_click=lambda: copy('dijkstra'))
     with ui.row():
-        ui.button('隣のマス_4', on_click=lambda: copy('neighbor4'))
-        ui.button('隣のマス_8', on_click=lambda: copy('neighbor8'))
+        ui.button('隣接マス_4', on_click=lambda: copy('neighbor4'))
+        ui.button('隣接マス_8', on_click=lambda: copy('neighbor8'))
 
 with ui.card():
     ui.label('データ構造')
@@ -368,15 +405,16 @@ with ui.card():
     ui.label('数学系')
     with ui.row():
         ui.button('lcm', on_click=lambda: copy('lcm'))
-        ui.button('arraylcm', on_click=lambda: copy('arraylcm'))
+        ui.button('lcm（配列）', on_click=lambda: copy('arraylcm'))
         ui.button('gcd', on_click=lambda: copy('gcd'))
-        ui.button('arraygcd', on_click=lambda: copy('arraygcd'))
+        ui.button('gcd（配列）', on_click=lambda: copy('arraygcd'))
 
 with ui.card():
     ui.label('その他')
     with ui.row():
         ui.button('一次元累積和', on_click=lambda: copy('cumul1'))
         ui.button('二次元累積和', on_click=lambda: copy('cumul2'))
+        ui.button('要素数Map', on_click=lambda: copy('mapUtil'))
 
 
 ui.run()
