@@ -2,7 +2,7 @@ from nicegui import ui
 import pyperclip
 
 utils = {
-    'graph':
+    'graph_1':
         '''
             int n = 10;
             int m = 10;
@@ -18,6 +18,26 @@ utils = {
                     int v = 0;
                     e.get(u).add(v);
                     e.get(v).add(u);
+                }
+            }
+        ''',
+    'graph_2':
+        '''
+            int n = 10;
+            int m = 10;
+            List<List<LongPair>> e = new ArrayList<>();
+            boolean[] a = new boolean[n];
+        
+            void solve() {
+                for (int i = 0; i < n; i++) {
+                    e.add(new ArrayList<>());
+                }
+                for (int i = 0; i < m; i++) {
+                    int u = in.nextInt()-1;
+                    int v = in.nextInt()-1;
+                    long t = in.nextLong();
+                    e.get(u).add(new LongPair(v,t));
+                    e.get(v).add(new LongPair(u,t));
                 }
             }
         ''',
@@ -46,6 +66,30 @@ utils = {
                         cost[i] = cost[num] + 1;
                     }
                 }
+            }
+        ''',
+    'dijkstra':
+        '''    
+            long[] dijkstra(int n,int start,List<List<LongPair>> e){
+                long[] ret = new long[n];
+                Arrays.fill(ret,Long.MAX_VALUE);
+                PriorityQueue<LongPair> queue = new PriorityQueue<>(Comparator.comparingLong(q -> q.s));
+                queue.add(new LongPair(start,0));
+                ret[start] = 0;
+                while (!queue.isEmpty()){
+                    LongPair num = queue.poll();
+                    int p = (int)num.f;
+                    if(ret[p] < num.s){
+                        continue;
+                    }
+                    for (LongPair edge : e.get(p)) {
+                        if(ret[(int)edge.f] > num.s + edge.s){
+                            ret[(int)edge.f] = num.s + edge.s;
+                            queue.add(new LongPair((int)edge.f,num.s + edge.s));
+                        }
+                    }
+                }
+                return ret;
             }
         ''',
     'neighbor4':
@@ -274,13 +318,21 @@ utils = {
                 }
             }
         ''',
+    'cumul1':
+        '''
+            long[] cumulativeSum(long[] a){
+                long[] b = new long[a.length+1];
+                for (int i = 1; i <= a.length; i++) {
+                    b[i] = b[i-1] + a[i-1];
+                }
+                return b;
+            }
+        ''',
 }
 
 
 def copy(str):
     pyperclip.copy(utils[str])
-    print(str)
-
 
 
 with ui.card():
@@ -293,14 +345,15 @@ with ui.card():
 with ui.card():
     ui.label('グラフアルゴリズム')
     with ui.row():
-        ui.button('Input', on_click=lambda: copy('graph'))
+        ui.button('Input_重みなし', on_click=lambda: copy('graph_1'))
+        ui.button('Input_重みあり', on_click=lambda: copy('graph_2'))
+    with ui.row():
         ui.button('dfs', on_click=lambda: copy('dfs'))
         ui.button('bfs', on_click=lambda: copy('bfs'))
-        ui.button('Dijkstra', on_click=lambda: copy('bfs'))
+        ui.button('Dijkstra', on_click=lambda: copy('dijkstra'))
     with ui.row():
         ui.button('隣のマス_4', on_click=lambda: copy('neighbor4'))
         ui.button('隣のマス_8', on_click=lambda: copy('neighbor8'))
-
 
 with ui.card():
     ui.label('データ構造')
@@ -318,5 +371,12 @@ with ui.card():
         ui.button('arraylcm', on_click=lambda: copy('arraylcm'))
         ui.button('gcd', on_click=lambda: copy('gcd'))
         ui.button('arraygcd', on_click=lambda: copy('arraygcd'))
+
+with ui.card():
+    ui.label('その他')
+    with ui.row():
+        ui.button('一次元累積和', on_click=lambda: copy('cumul1'))
+        ui.button('二次元累積和', on_click=lambda: copy('cumul2'))
+
 
 ui.run()
