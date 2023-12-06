@@ -239,8 +239,11 @@ utils = {
             
                 @Override
                 public int compareTo(IntPair o) {
-                    return o.f == this.f ? Integer.compare(o.s,this.s) : Integer.compare(o.f,this.f);
+                    return o.f == this.f ? Integer.compare(this.s,o.s) : Integer.compare(this.f,o.f);
                 }
+                
+                public String toString(){
+                    return "[" + this.f + "," + this.s + "]";
             }
         ''',
     'longPair':
@@ -255,8 +258,11 @@ utils = {
             
                 @Override
                 public int compareTo(LongPair o) {
-                    return o.f == this.f ? Long.compare(o.s,this.s) : Long.compare(o.f,this.f);
+                    return o.f == this.f ? Long.compare(this.s,o.s) : Long.compare(this.f,o.f);
                 }
+                
+                public String toString(){
+                    return "[" + this.f + "," + this.s + "]";
             }
         ''',
     'segTree':
