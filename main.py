@@ -98,7 +98,7 @@ utils = {
                 int[] yy = {1, 0,-1, 0};
                 int[] xx = {0, 1, 0,-1};
                 List<IntPair> list = new ArrayList<>();
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 4; i++) {
                     int ny = y + yy[i];
                     int nx = x + xx[i];
                     if(ny >= 0 && ny < h && nx >= 0 && nx < w){
@@ -242,8 +242,10 @@ utils = {
                     return o.f == this.f ? Integer.compare(this.s,o.s) : Integer.compare(this.f,o.f);
                 }
                 
+                @Override
                 public String toString(){
                     return "[" + this.f + "," + this.s + "]";
+                }
             }
         ''',
     'longPair':
@@ -261,8 +263,10 @@ utils = {
                     return o.f == this.f ? Long.compare(this.s,o.s) : Long.compare(this.f,o.f);
                 }
                 
+                @Override
                 public String toString(){
                     return "[" + this.f + "," + this.s + "]";
+                }
             }
         ''',
     'segTree':
