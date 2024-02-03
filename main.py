@@ -172,6 +172,57 @@ utils = {
                 return b == 0 ? a : gcd(b,a%b);
             }
         ''',
+    'Nary':
+        '''
+        class NAryNumber{
+            public static char[] toNary(long decimalNum,long N){
+                long t = decimalNum;
+                StringBuilder str = new StringBuilder();
+                while (t > 0){
+                    str.append((char)(t % N));
+                    t /= N;
+                }
+                return str.reverse().toString().toCharArray();
+            }
+            public static long toDecimal(char[] NAryNumber,long N){
+                long t = 1;
+                long sum = 0;
+                for (char c : NAryNumber) {
+                    sum += (c - '0') * t;
+                    t *= N;
+                }
+                return sum;
+            }
+        }
+        ''',
+    'binary':
+        '''
+        class BinaryNum{
+            public static char[] toBinary(long decimalNum, boolean revese){
+                long t = decimalNum;
+                StringBuilder str = new StringBuilder();
+                while (t > 0){
+                    str.append(t & 1);
+                    t >>= 1;
+                }
+                if(revese){
+                    str.reverse();
+                }
+                return str.toString().toCharArray();
+            }
+            public static long toDecimal(char[] binaryNum){
+                long t = 1;
+                long sum = 0;
+                for (char c : binaryNum) {
+                    if(c == '1'){
+                        sum += t;
+                    }
+                    t <<= 1;
+                }
+                return sum;
+            }
+        }
+        ''',
     'bit':
         '''
             for (int i = 0; i < 1 << n; i++) {
@@ -244,7 +295,7 @@ utils = {
                 
                 @Override
                 public String toString(){
-                    return "[" + this.f + "," + this.s + "]";
+                    return " " + this.f + " " + this.s + " ";
                 }
             }
         ''',
@@ -265,7 +316,28 @@ utils = {
                 
                 @Override
                 public String toString(){
-                    return "[" + this.f + "," + this.s + "]";
+                    return " " + this.f + " " + this.s + " ";
+                }
+            }
+        ''',
+    'NodePair':
+        '''
+            class NodePair implements Comparable<NodePair>{
+                int index;
+                long weight;
+                NodePair(int index,long weight){
+                    this.index = index;
+                    this.weight = weight;
+                }
+            
+                @Override
+                public int compareTo(NodePair o) {
+                    return o.index == this.index ? Long.compare(this.weight,o.weight) : Integer.compare(this.index,o.index);
+                }
+            
+                @Override
+                public String toString(){
+                    return " " + this.index + "," + this.weight + " ";
                 }
             }
         ''',
@@ -491,6 +563,7 @@ with ui.card():
         ui.button('Pair', on_click=lambda: copy('pair'))
         ui.button('IntPair', on_click=lambda: copy('intPair'))
         ui.button('LongPair', on_click=lambda: copy('longPair'))
+        ui.button('NodePair', on_click=lambda: copy('NodePair'))
     with ui.row():
         ui.button('セグ木', on_click=lambda: copy('segTree'))
 
@@ -501,6 +574,9 @@ with ui.card():
         ui.button('lcm（配列）', on_click=lambda: copy('arraylcm'))
         ui.button('gcd', on_click=lambda: copy('gcd'))
         ui.button('gcd（配列）', on_click=lambda: copy('arraygcd'))
+    with ui.row():
+        ui.button('基数変換', on_click=lambda: copy('Nary'))
+        ui.button('二進数変換', on_click=lambda: copy('binary'))
 
 with ui.card():
     ui.label('その他')
