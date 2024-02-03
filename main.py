@@ -223,6 +223,25 @@ utils = {
             }
         }
         ''',
+    'inv':
+        '''
+            long inv(long a) {
+                long b = mod;
+                long u = 1, v = 0;
+                while (b >= 1) {
+                    long t = a / b;
+                    a -= t * b;
+                    u -= t * v;
+                    if (a < 1) {
+                        return (v %= mod) < 0 ? v + mod : v;
+                    }
+                    t = b / a;
+                    b -= t * a;
+                    v -= t * u;
+                }
+                return (u %= mod) < 0 ? u + mod : u;
+            }
+        ''',
     'bit':
         '''
             for (int i = 0; i < 1 << n; i++) {
@@ -400,6 +419,72 @@ utils = {
                 }
             }
         ''',
+    'unionfind':
+        '''
+            class UnionFind{
+            
+                int n;
+                int m;
+                int[] parent;
+                int[] size;
+            
+                UnionFind(int n){
+                    parent = new int[n];
+                    size = new int[n];
+                    for (int i = 0; i < n; i++) {
+                        parent[i] = i;
+                        size[i] = 1;
+                    }
+                    this.n = n;
+                    m = n;
+                }
+            
+                public int root(int x){
+                    while (parent[x] != x){
+                        x = parent[x] = parent[parent[x]];
+                    }
+                    return x;
+                }
+            
+                public boolean unite(int x,int y){
+                    x = root(x);
+                    y = root(y);
+                    if(x == y)return false;
+                    if(size[x] > size[y]){
+                        parent[y] = x;
+                        size[x] += size[y];
+                    }else{
+                        parent[x] = y;
+                        size[y] += size[x];
+                    }
+                    m--;
+                    return true;
+                }
+            
+                @Override
+                public String toString(){
+                    List<StringJoiner> list = new ArrayList<>();
+                    for (int i = 0; i < m; i++) {
+                        list.add(new StringJoiner(" "));
+                    }
+                    int[] p = new int[n];
+                    Arrays.fill(p,m);
+                    int l = 0;
+                    for (int i = 0; i < m; i++) {
+                        if(p[root(i)] == m){
+                            p[root(i)] = l;
+                            l++;
+                        }
+                        list.get(p[root(i)]).add(i+"");
+                    }
+                    StringBuilder s = new StringBuilder();
+                    for (int i = 0; i < m; i++) {
+                        s.append(list.get(i));
+                    }
+                    return s.toString();
+                }
+            }
+        ''',
     'cumul1':
         '''
             long[] cumulativeSum(long[] a){
@@ -566,6 +651,7 @@ with ui.card():
         ui.button('NodePair', on_click=lambda: copy('NodePair'))
     with ui.row():
         ui.button('セグ木', on_click=lambda: copy('segTree'))
+        ui.button('UnionFind', on_click=lambda: copy('unionfind'))
 
 with ui.card():
     ui.label('数学系')
@@ -577,6 +663,8 @@ with ui.card():
     with ui.row():
         ui.button('基数変換', on_click=lambda: copy('Nary'))
         ui.button('二進数変換', on_click=lambda: copy('binary'))
+    with ui.row():
+        ui.button('mod逆元', on_click=lambda: copy('inv'))
 
 with ui.card():
     ui.label('その他')
