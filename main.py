@@ -559,6 +559,196 @@ utils = {
                 }
             }
         ''',
+    'binaryTrie':
+    '''
+        class BinaryTrie{
+            private static final int B = 63;
+            Node root = new Node();
+        
+            public boolean add(long x){
+                if(x < 0){
+                    return false;
+                }
+                Node node = root;
+                node.cnt++;
+                node.sum += x;
+                for (int i = B-1; i >= 0; i--) {
+                    if(((x >> i) & 1) == 0){
+                        if(node.left == null){
+                            node.left = new Node();
+                        }
+                        node = node.left;
+                    }else{
+                        if(node.right == null){
+                            node.right = new Node();
+                        }
+                        node = node.right;
+                    }
+                    node.cnt++;
+                    node.sum += x;
+                }
+                return true;
+            }
+        
+            public boolean remove(long x){
+                if(x < 0 || !contains(x)){
+                    return false;
+                }
+                Node node = root;
+                node.cnt--;
+                node.sum -= x;
+                for (int i = B-1; i >= 0; i--) {
+                    if(((x >> i) & 1) == 0){
+                        node.left.cnt--;
+                        node.left.sum -= x;
+                        if(node.left.cnt == 0){
+                            node.left = null;
+                            return true;
+                        }
+                        node = node.left;
+                    }else{
+                        node.right.cnt--;
+                        node.right.sum -= x;
+                        if(node.right.cnt == 0){
+                            node.right = null;
+                            return true;
+                        }
+                        node = node.right;
+                    }
+                }
+                return true;
+        
+            }
+        
+            long get(int i){
+                if(i < 0 || i > size()){
+                    return -1;
+                }
+                Node node = root;
+                long val = 0;
+                int k = i;
+                for (int j = 0; j < B; j++) {
+                    val <<= 1;
+                    int now = node.left == null ? 0 : node.left.cnt;
+                    if(k < now){
+                        node = node.left;
+                    }else{
+                        node = node.right;
+                        val++;
+                        k -= now;
+                    }
+                    if(node == null){
+                        break;
+                    }
+                }
+                return val;
+            }
+            boolean contains(long x){
+                return count(x) > 0;
+            }
+        
+            int count(long x){
+                if(x < 0){
+                    return 0;
+                }
+                Node node = root;
+                for (int i = B-1; i >= 0; i--) {
+                    if(((x >> i) & 1) == 0){
+                        if(node.left == null){
+                            return 0;
+                        }
+                        node = node.left;
+                    }else{
+                        if(node.right == null){
+                            return 0;
+                        }
+                        node = node.right;
+                    }
+                }
+                return node.cnt;
+            }
+        
+            long min(){
+                Node node = root;
+                long val = 0;
+                for (int i = 0; i < B; i++) {
+                    val <<= 1;
+                    if(node.left != null){
+                        node = node.left;
+                    }else{
+                        node = node.right;
+                        val++;
+                    }
+                }
+                return val;
+            }
+        
+            long max(){
+                Node node = root;
+                long val = 0;
+                for (int i = 0; i < B; i++) {
+                    val <<= 1;
+                    if(node.right != null){
+                        node = node.right;
+                        val++;
+                    }else{
+                        node = node.left;
+                    }
+                }
+                return val;
+            }
+        
+            long sum(){
+                return root.sum;
+            }
+        
+            long sum(int i){    //TODO
+                if(i < 0 || i > size()){
+                    return -1;
+                }
+                Node node = root;
+                long val = 0;
+                int k = i;
+                for (int j = 0; j < B; j++) {
+                    int now = node.left == null ? 0 : node.left.cnt;
+                    if(k < now){
+                        node = node.left;
+                    }else{
+                        val += node.left == null ? 0 : node.left.sum;
+                        k -= now;
+                        node = node.right;
+                    }
+                    if(node == null){
+                        break;
+                    }
+                }
+                return val;
+            }
+        
+            void clear(){
+                root.cnt = 0;
+                root.sum = 0;
+                root.left = null;
+                root.right = null;
+            }
+        
+            int size(){
+                return root.cnt;
+            }
+            int length(){
+                return size();
+            }
+            boolean isEmpty(){
+                return size() == 0;
+            }
+            private static class Node{
+                int cnt;
+                long sum;
+                Node left;
+                Node right;
+            }
+        }
+    ''',
     'cumul1':
         '''
             long[] cumulativeSum(long[] a){
@@ -586,6 +776,84 @@ utils = {
                     }
                 }
                 return b;
+            }
+        ''',
+    'compress':
+        '''
+            long[] compress(long[] a){
+                int n = a.length;
+                long[] b = a.clone();
+                Arrays.sort(b);
+                long[] c = new long[n];
+                Map<Long,Long> map = new HashMap<>();
+                long temp = b[0];
+                long now = 1;
+                map.put(b[0],0L);
+                for (int i = 0; i < n; i++) {
+                    if(temp != b[i]){
+                        map.put(b[i],now++);
+                        temp = b[i];
+                    }
+                }
+                for (int i = 0; i < n; i++) {
+                    c[i] = map.get(a[i]);
+                }
+                return c;
+            }
+        ''',
+    'compress2':
+        '''
+            LongPair[] compress(LongPair[] a){
+                int n = a.length;
+                long[] x = new long[n];
+                long[] y = new long[n];
+                for (int i = 0; i < n; i++) {
+                    y[i] = a[i].f;
+                    x[i] = a[i].s;
+                }
+                Arrays.sort(x);
+                Arrays.sort(y);
+                LongPair[] c = new LongPair[n];
+                Map<Long,Long> xMap = new HashMap<>();
+                Map<Long,Long> yMap = new HashMap<>();
+                long temp = x[0];
+                long now = 1;
+                xMap.put(temp,0L);
+                for (int i = 0; i < n; i++) {
+                    if(temp != x[i]){
+                        xMap.put(x[i],now++);
+                        temp = x[i];
+                    }
+                }
+                temp = y[0];
+                now = 1;
+                yMap.put(temp,0L);
+                for (int i = 0; i < n; i++) {
+                    if(temp != y[i]){
+                        yMap.put(y[i],now++);
+                        temp = y[i];
+                    }
+                }
+                for (int i = 0; i < n; i++) {
+                    c[i] = new LongPair(yMap.get(a[i].f),xMap.get(a[i].s));
+                }
+                return c;
+            }
+        ''',
+    'sieve':
+        '''    
+            List<Long> sieve(int n){
+                List<Long> list = new ArrayList<>();
+                boolean[] a = new boolean[n+1];
+                for (int i = 2; i <= n; i++) {
+                    if(!a[i]){
+                        for (int j = i; j <= n; j+=i) {
+                            a[j] = true;
+                        }
+                        list.add((long)i);
+                    }
+                }
+                return list;
             }
         ''',
     'mapUtil':
@@ -727,6 +995,8 @@ with ui.card():
         ui.button('セグ木', on_click=lambda: copy('segTree'))
         ui.button('遅延セグ木', on_click=lambda: copy('lazyseg'))
         ui.button('UnionFind', on_click=lambda: copy('unionfind'))
+        ui.button('BinaryTrie', on_click=lambda: copy('binaryTrie'))
+
 
 with ui.card():
     ui.label('数学系')
@@ -740,6 +1010,11 @@ with ui.card():
         ui.button('二進数変換', on_click=lambda: copy('binary'))
     with ui.row():
         ui.button('mod逆元', on_click=lambda: copy('inv'))
+        ui.button('座標圧縮', on_click=lambda: copy('compress'))
+        ui.button('二次元座標圧縮', on_click=lambda: copy('compress2'))
+    with ui.row():
+        ui.button('エラトステネスの篩', on_click=lambda: copy('sieve'))
+
 
 with ui.card():
     ui.label('その他')
