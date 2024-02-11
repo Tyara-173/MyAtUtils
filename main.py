@@ -172,6 +172,20 @@ utils = {
                 return b == 0 ? a : gcd(b,a%b);
             }
         ''',
+    'extGCD':
+        '''
+            long[] extGCD(long a,long b){
+                if(b == 0){
+                    return new long[]{1,0};
+                }
+                long[] t = extGCD(b,a%b);
+                long tt = t[0];
+                t[0] = t[1];
+                t[1] = tt;
+                t[1] -= a / b * t[0];
+                return t;
+            }
+        ''',
     'Nary':
         '''
         class NAryNumber{
@@ -559,196 +573,229 @@ utils = {
                 }
             }
         ''',
-    'binaryTrie':
-    '''
-        class BinaryTrie{
-            private static final int B = 63;
-            Node root = new Node();
-        
-            public boolean add(long x){
-                if(x < 0){
-                    return false;
+    'BIT':
+        '''
+            class BIT {
+                int n;
+                long[][] bit;
+                BIT(int n) {
+                    this.n = n+1;
+                    bit = new long[2][n+1];
                 }
-                Node node = root;
-                node.cnt++;
-                node.sum += x;
-                for (int i = B-1; i >= 0; i--) {
-                    if(((x >> i) & 1) == 0){
-                        if(node.left == null){
-                            node.left = new Node();
-                        }
-                        node = node.left;
-                    }else{
-                        if(node.right == null){
-                            node.right = new Node();
-                        }
-                        node = node.right;
+            
+                void add_sub(int p, int i, long x) {
+                    for (int idx = i; idx < n; idx += (idx & -idx)) {
+                        bit[p][idx] += x;
                     }
+                }
+                void add(int l, int r, long x) {  // [l,r) に加算
+                    add_sub(0, l, -x * (l - 1));
+                    add_sub(0, r, x * (r - 1));
+                    add_sub(1, l, x);
+                    add_sub(1, r, -x);
+                }
+                long sum_sub(int p, int i) {
+                    long s = 0;
+                    for (int idx = i; idx > 0; idx -= (idx & -idx)) {
+                        s += bit[p][idx];
+                    }
+                    return s;
+                }
+                long sum(int i) {
+                    return sum_sub(0, i) + sum_sub(1, i) * i;
+                }
+            }
+        ''',
+    'binaryTrie':
+        '''
+            class BinaryTrie{
+                private static final int B = 63;
+                Node root = new Node();
+            
+                public boolean add(long x){
+                    if(x < 0){
+                        return false;
+                    }
+                    Node node = root;
                     node.cnt++;
                     node.sum += x;
-                }
-                return true;
-            }
-        
-            public boolean remove(long x){
-                if(x < 0 || !contains(x)){
-                    return false;
-                }
-                Node node = root;
-                node.cnt--;
-                node.sum -= x;
-                for (int i = B-1; i >= 0; i--) {
-                    if(((x >> i) & 1) == 0){
-                        node.left.cnt--;
-                        node.left.sum -= x;
-                        if(node.left.cnt == 0){
-                            node.left = null;
-                            return true;
+                    for (int i = B-1; i >= 0; i--) {
+                        if(((x >> i) & 1) == 0){
+                            if(node.left == null){
+                                node.left = new Node();
+                            }
+                            node = node.left;
+                        }else{
+                            if(node.right == null){
+                                node.right = new Node();
+                            }
+                            node = node.right;
                         }
-                        node = node.left;
-                    }else{
-                        node.right.cnt--;
-                        node.right.sum -= x;
-                        if(node.right.cnt == 0){
-                            node.right = null;
-                            return true;
+                        node.cnt++;
+                        node.sum += x;
+                    }
+                    return true;
+                }
+            
+                public boolean remove(long x){
+                    if(x < 0 || !contains(x)){
+                        return false;
+                    }
+                    Node node = root;
+                    node.cnt--;
+                    node.sum -= x;
+                    for (int i = B-1; i >= 0; i--) {
+                        if(((x >> i) & 1) == 0){
+                            node.left.cnt--;
+                            node.left.sum -= x;
+                            if(node.left.cnt == 0){
+                                node.left = null;
+                                return true;
+                            }
+                            node = node.left;
+                        }else{
+                            node.right.cnt--;
+                            node.right.sum -= x;
+                            if(node.right.cnt == 0){
+                                node.right = null;
+                                return true;
+                            }
+                            node = node.right;
                         }
-                        node = node.right;
                     }
+                    return true;
+            
                 }
-                return true;
-        
-            }
-        
-            long get(int i){
-                if(i < 0 || i > size()){
-                    return -1;
-                }
-                Node node = root;
-                long val = 0;
-                int k = i;
-                for (int j = 0; j < B; j++) {
-                    val <<= 1;
-                    int now = node.left == null ? 0 : node.left.cnt;
-                    if(k < now){
-                        node = node.left;
-                    }else{
-                        node = node.right;
-                        val++;
-                        k -= now;
+            
+                long get(int i){
+                    if(i < 0 || i > size()){
+                        return -1;
                     }
-                    if(node == null){
-                        break;
-                    }
-                }
-                return val;
-            }
-            boolean contains(long x){
-                return count(x) > 0;
-            }
-        
-            int count(long x){
-                if(x < 0){
-                    return 0;
-                }
-                Node node = root;
-                for (int i = B-1; i >= 0; i--) {
-                    if(((x >> i) & 1) == 0){
-                        if(node.left == null){
-                            return 0;
+                    Node node = root;
+                    long val = 0;
+                    int k = i;
+                    for (int j = 0; j < B; j++) {
+                        val <<= 1;
+                        int now = node.left == null ? 0 : node.left.cnt;
+                        if(k < now){
+                            node = node.left;
+                        }else{
+                            node = node.right;
+                            val++;
+                            k -= now;
                         }
-                        node = node.left;
-                    }else{
-                        if(node.right == null){
-                            return 0;
+                        if(node == null){
+                            break;
                         }
-                        node = node.right;
                     }
+                    return val;
                 }
-                return node.cnt;
-            }
-        
-            long min(){
-                Node node = root;
-                long val = 0;
-                for (int i = 0; i < B; i++) {
-                    val <<= 1;
-                    if(node.left != null){
-                        node = node.left;
-                    }else{
-                        node = node.right;
-                        val++;
+                boolean contains(long x){
+                    return count(x) > 0;
+                }
+            
+                int count(long x){
+                    if(x < 0){
+                        return 0;
                     }
-                }
-                return val;
-            }
-        
-            long max(){
-                Node node = root;
-                long val = 0;
-                for (int i = 0; i < B; i++) {
-                    val <<= 1;
-                    if(node.right != null){
-                        node = node.right;
-                        val++;
-                    }else{
-                        node = node.left;
+                    Node node = root;
+                    for (int i = B-1; i >= 0; i--) {
+                        if(((x >> i) & 1) == 0){
+                            if(node.left == null){
+                                return 0;
+                            }
+                            node = node.left;
+                        }else{
+                            if(node.right == null){
+                                return 0;
+                            }
+                            node = node.right;
+                        }
                     }
+                    return node.cnt;
                 }
-                return val;
-            }
-        
-            long sum(){
-                return root.sum;
-            }
-        
-            long sum(int i){    //TODO
-                if(i < 0 || i > size()){
-                    return -1;
-                }
-                Node node = root;
-                long val = 0;
-                int k = i;
-                for (int j = 0; j < B; j++) {
-                    int now = node.left == null ? 0 : node.left.cnt;
-                    if(k < now){
-                        node = node.left;
-                    }else{
-                        val += node.left == null ? 0 : node.left.sum;
-                        k -= now;
-                        node = node.right;
+            
+                long min(){
+                    Node node = root;
+                    long val = 0;
+                    for (int i = 0; i < B; i++) {
+                        val <<= 1;
+                        if(node.left != null){
+                            node = node.left;
+                        }else{
+                            node = node.right;
+                            val++;
+                        }
                     }
-                    if(node == null){
-                        break;
-                    }
+                    return val;
                 }
-                return val;
+            
+                long max(){
+                    Node node = root;
+                    long val = 0;
+                    for (int i = 0; i < B; i++) {
+                        val <<= 1;
+                        if(node.right != null){
+                            node = node.right;
+                            val++;
+                        }else{
+                            node = node.left;
+                        }
+                    }
+                    return val;
+                }
+            
+                long sum(){
+                    return root.sum;
+                }
+            
+                long sum(int i){    //TODO
+                    if(i < 0 || i > size()){
+                        return -1;
+                    }
+                    Node node = root;
+                    long val = 0;
+                    int k = i;
+                    for (int j = 0; j < B; j++) {
+                        int now = node.left == null ? 0 : node.left.cnt;
+                        if(k < now){
+                            node = node.left;
+                        }else{
+                            val += node.left == null ? 0 : node.left.sum;
+                            k -= now;
+                            node = node.right;
+                        }
+                        if(node == null){
+                            break;
+                        }
+                    }
+                    return val;
+                }
+            
+                void clear(){
+                    root.cnt = 0;
+                    root.sum = 0;
+                    root.left = null;
+                    root.right = null;
+                }
+            
+                int size(){
+                    return root.cnt;
+                }
+                int length(){
+                    return size();
+                }
+                boolean isEmpty(){
+                    return size() == 0;
+                }
+                private static class Node{
+                    int cnt;
+                    long sum;
+                    Node left;
+                    Node right;
+                }
             }
-        
-            void clear(){
-                root.cnt = 0;
-                root.sum = 0;
-                root.left = null;
-                root.right = null;
-            }
-        
-            int size(){
-                return root.cnt;
-            }
-            int length(){
-                return size();
-            }
-            boolean isEmpty(){
-                return size() == 0;
-            }
-            private static class Node{
-                int cnt;
-                long sum;
-                Node left;
-                Node right;
-            }
-        }
-    ''',
+        ''',
     'cumul1':
         '''
             long[] cumulativeSum(long[] a){
@@ -995,6 +1042,7 @@ with ui.card():
         ui.button('セグ木', on_click=lambda: copy('segTree'))
         ui.button('遅延セグ木', on_click=lambda: copy('lazyseg'))
         ui.button('UnionFind', on_click=lambda: copy('unionfind'))
+        ui.button('BIT', on_click=lambda: copy('BIT'))
         ui.button('BinaryTrie', on_click=lambda: copy('binaryTrie'))
 
 
@@ -1005,6 +1053,7 @@ with ui.card():
         ui.button('lcm（配列）', on_click=lambda: copy('arraylcm'))
         ui.button('gcd', on_click=lambda: copy('gcd'))
         ui.button('gcd（配列）', on_click=lambda: copy('arraygcd'))
+        ui.button('拡張gcd', on_click=lambda: copy('extGCD'))
     with ui.row():
         ui.button('基数変換', on_click=lambda: copy('Nary'))
         ui.button('二進数変換', on_click=lambda: copy('binary'))
