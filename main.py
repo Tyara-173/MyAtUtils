@@ -450,28 +450,32 @@ utils = {
                     this.size = x;
                 }
             
-                void eval(int k) { // 配列のk番目を更新
-                    if (lazy[k] == 0) return;  // 更新するものが無ければ終了
-                    if (k < size - 1) {             // 葉でなければ子に伝搬
-                        lazy[k * 2 + 1] = lazy[k];
-                        lazy[k * 2 + 2] = lazy[k];
+                void eval(int k) {
+                    if (lazy[k] == 0) return;
+                    if (k < size - 1) {
+                        lazy[k * 2 + 1] += lazy[k] / 2;
+                        lazy[k * 2 + 2] += lazy[k] / 2;
+            //            lazy[k * 2 + 1] = lazy[k];
+            //            lazy[k * 2 + 2] = lazy[k];
                     }
                     // 自身を更新
-                    dat[k] = lazy[k];
+                    dat[k] += lazy[k];
                     lazy[k] = 0;
                 }
             
                 void update(int a, int b, long x, int k, int l, int r) {
                     eval(k);
                     if (a <= l && r <= b) {  // 完全に内側の時
-                        lazy[k] = x;
+                        lazy[k] += x * (r - l);
+            //            lazy[k] = x;
                         eval(k);
                     } else if (a < r && l < b) {                     // 一部区間が被る時
                         update(a, b, x, k * 2 + 1, l, (l + r) / 2);  // 左の子
                         update(a, b, x, k * 2 + 2, (l + r) / 2, r);  // 右の子
-                        dat[k] = Math.max(dat[k * 2 + 1], dat[k * 2 + 2]);
+                        dat[k] = f(dat[k * 2 + 1] , dat[k * 2 + 2]);
                     }
                 }
+            
                 void update(int a, int b, long x) { update(a, b, x, 0, 0, size); }
             
                 long query(int a,int b){
@@ -488,7 +492,10 @@ utils = {
                     }
                     long vl = query(a,b,k*2+1,l,(l+r)/2);
                     long vr = query(a,b,k*2+2,(l+r)/2,r);
-                    return Math.max(vl, vr);
+                    return f(vl,vr);
+                }
+                long f(long a,long b){
+                    return a+b;
                 }
                 List<List<Long>> getDat(){
                     int x = 1;
@@ -611,14 +618,13 @@ utils = {
             class BinaryTrie{
                 private static final int B = 63;
                 Node root = new Node();
-            
-                public boolean add(long x){
+                public boolean add(long x,long num){
                     if(x < 0){
                         return false;
                     }
                     Node node = root;
-                    node.cnt++;
-                    node.sum += x;
+                    node.cnt += num;
+                    node.sum += x * num;
                     for (int i = B-1; i >= 0; i--) {
                         if(((x >> i) & 1) == 0){
                             if(node.left == null){
@@ -631,31 +637,37 @@ utils = {
                             }
                             node = node.right;
                         }
-                        node.cnt++;
-                        node.sum += x;
+                        node.cnt += num;
+                        node.sum += x * num;
                     }
                     return true;
                 }
-            
-                public boolean remove(long x){
+                public boolean add(long x){
+                    if(x < 0){
+                        return false;
+                    }
+                    return add(x,1);
+                }
+                public boolean remove(long x,long num){
                     if(x < 0 || !contains(x)){
                         return false;
                     }
                     Node node = root;
-                    node.cnt--;
-                    node.sum -= x;
+                    num = Math.min(num,count(x));
+                    node.cnt -= num;
+                    node.sum -= x * num;
                     for (int i = B-1; i >= 0; i--) {
                         if(((x >> i) & 1) == 0){
-                            node.left.cnt--;
-                            node.left.sum -= x;
+                            node.left.cnt -= num;
+                            node.left.sum -= x * num;
                             if(node.left.cnt == 0){
                                 node.left = null;
                                 return true;
                             }
                             node = node.left;
                         }else{
-                            node.right.cnt--;
-                            node.right.sum -= x;
+                            node.right.cnt -= num;
+                            node.right.sum -= x * num;
                             if(node.right.cnt == 0){
                                 node.right = null;
                                 return true;
@@ -664,7 +676,12 @@ utils = {
                         }
                     }
                     return true;
-            
+                }
+                public boolean remove(long x){
+                    if(x < 0 || !contains(x)){
+                        return false;
+                    }
+                    return remove(x,1);
                 }
             
                 long get(int i){
@@ -795,7 +812,7 @@ utils = {
                     Node right;
                 }
             }
-        ''',
+       ''',
     'cumul1':
         '''
             long[] cumulativeSum(long[] a){
