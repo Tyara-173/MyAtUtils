@@ -1,13 +1,30 @@
-public class bit {
-    void bitAll(int n){
-        for (int i = 0; i < 1 << n; i++) {
-            for (int j = 0; j < n; j++) {
-                if(((i >> j) & 1) == 1){
+class BIT {
+    int n;
+    long[][] bit;
+    BIT(int n) {
+        this.n = n+1;
+        bit = new long[2][n+1];
+    }
 
-                }else{
-
-                }
-            }
+    void add_sub(int p, int i, long x) {
+        for (int idx = i; idx < n; idx += (idx & -idx)) {
+            bit[p][idx] += x;
         }
+    }
+    void add(int l, int r, long x) {  // [l,r) に加算
+        add_sub(0, l, -x * (l - 1));
+        add_sub(0, r, x * (r - 1));
+        add_sub(1, l, x);
+        add_sub(1, r, -x);
+    }
+    long sum_sub(int p, int i) {
+        long s = 0;
+        for (int idx = i; idx > 0; idx -= (idx & -idx)) {
+            s += bit[p][idx];
+        }
+        return s;
+    }
+    long sum(int i) {
+        return sum_sub(0, i) + sum_sub(1, i) * i;
     }
 }
