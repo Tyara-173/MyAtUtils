@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class SegmentTree{
     private final int size;
     private final long[] dat;
