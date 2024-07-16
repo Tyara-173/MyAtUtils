@@ -1,5 +1,3 @@
-import java.util.*;
-
 class TrieTree{
     Node root = new Node();
     List<String> stringList = new ArrayList<>();
