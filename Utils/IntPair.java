@@ -13,4 +13,5 @@ class IntPair implements Comparable<IntPair>{
 
     public String toString(){
         return this.f + " " + this.s;
+    }
 }

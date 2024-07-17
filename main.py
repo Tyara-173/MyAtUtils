@@ -60,6 +60,8 @@ with ui.card():
         ui.button('二次元座標圧縮', on_click=lambda: copy('compress2'))
     with ui.row():
         ui.button('エラトステネスの篩', on_click=lambda: copy('sieve'))
+        ui.button('素因数分解', on_click=lambda: copy('Prime_Factorize'))
+
 
 
 with ui.card():
