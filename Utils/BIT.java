@@ -11,7 +11,7 @@ class BIT {
             bit[p][idx] += x;
         }
     }
-    void add(int l, int r, long x) {  // [l,r) に加算
+    void add(int l, int r, long x) {  // [l,r)
         add_sub(0, l, -x * (l - 1));
         add_sub(0, r, x * (r - 1));
         add_sub(1, l, x);

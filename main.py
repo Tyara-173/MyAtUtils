@@ -68,7 +68,7 @@ with ui.card():
     ui.label('その他')
     with ui.row():
         ui.button('一次元累積和', on_click=lambda: copy('cumulSUM'))
-        ui.button('二次元累積和', on_click=lambda: copy('cumulSUM'))
+        ui.button('二次元累積和', on_click=lambda: copy('cumulSUM2'))
         ui.button('要素数Map', on_click=lambda: copy('MapUtil'))
 
 
