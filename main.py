@@ -41,6 +41,8 @@ with ui.card():
         ui.button('BIT', on_click=lambda: copy('BIT'))
         ui.button('Trie木', on_click=lambda: copy('Trie'))
         ui.button('BinaryTrie', on_click=lambda: copy('BinaryTrie'))
+    with ui.row():
+        ui.button('セグ木+ロリハ', on_click=lambda: copy('RollingHashSeg'))
 
 
 with ui.card():
@@ -61,7 +63,7 @@ with ui.card():
     with ui.row():
         ui.button('エラトステネスの篩', on_click=lambda: copy('sieve'))
         ui.button('素因数分解', on_click=lambda: copy('Prime_Factorize'))
-
+        ui.button('繰り返し二乗法', on_click=lambda: copy('pow'))
 
 
 with ui.card():
