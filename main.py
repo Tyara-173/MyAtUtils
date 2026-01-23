@@ -6,7 +6,7 @@ dirname = os.path.join(os.path.dirname(__file__), 'Utils')
 
 def copy(fine_name):
     filename = os.path.join(dirname, fine_name + '.java')
-    with open(filename) as f:
+    with open(filename,encoding="UTF-8") as f:
         pyperclip.copy(f.read())
 
 
