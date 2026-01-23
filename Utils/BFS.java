@@ -1,4 +1,4 @@
-long[] bfs(int n,int start,List<List<Integer> e){
+long[] bfs(int n,int start,List<List<Integer>> e){
     long[] cost = new long[n];
     Arrays.fill(cost,Long.MAX_VALUE);
     Deque<Integer> q = new ArrayDeque<>();
