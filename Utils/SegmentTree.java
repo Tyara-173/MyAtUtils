@@ -1,26 +1,23 @@
-
 class SegmentTree<T>{
     private final int size;
     private final List<T> dat;
     private final Monoid<T> monoid;
 
-    SegmentTree(int size,BinaryOperator<T> operator,T identity){
-        int x = 1;
-        while (x < size){
-            x *= 2;
-        }
-        this.size = x;
+    SegmentTree(int n,BinaryOperator<T> operator,T identity){
+        this.size = Integer.highestOneBit(n * 2 - 1);
         this.dat = new ArrayList<>();
+        for (int i = 0; i < this.size*2; i++) {
+            dat.add(identity);
+        }
         monoid = new Monoid<>(identity,operator);
     }
 
-    SegmentTree(int size,Monoid<T> monoid){
-        int x = 1;
-        while (x < size){
-            x *= 2;
-        }
-        this.size = x;
+    SegmentTree(int n,Monoid<T> monoid){
+        this.size = Integer.highestOneBit(n * 2 - 1);
         this.dat = new ArrayList<>();
+        for (int i = 0; i < this.size*2; i++) {
+            dat.add(monoid.identity());
+        }
         this.monoid = monoid;
     }
 
@@ -66,7 +63,7 @@ class SegmentTree<T>{
 //        return lists;
 //    }
 
-    class Monoid<T>{
+    static class Monoid<T>{
         private T identity;
         private Supplier<T> identitySupplier;
         private final BinaryOperator<T> operator;
@@ -88,5 +85,29 @@ class SegmentTree<T>{
         T operator(T a,T b){
             return operator.apply(a,b);
         }
+
+        static Monoid<Long> MIN = new Monoid<>(Long.MAX_VALUE,Long::min);
+        static Monoid<Long> MAX = new Monoid<>(Long.MIN_VALUE,Long::max);
+        static Monoid<Integer> MIN_INT = new Monoid<>(Integer.MAX_VALUE,Integer::min);
+        static Monoid<Integer> MAX_INT = new Monoid<>(Integer.MIN_VALUE,Integer::max);
+
+        static Monoid<Long> SUM = new Monoid<>(0L, Long::sum);
+        static Monoid<Long> PROD = new Monoid<>(1L,(a, b) -> a * b);
+        static Monoid<Long> SUM_MOD = new Monoid<>(0L, (a, b) -> (a + b) % Main.mod);
+        static Monoid<Long> PROD_MOD = new Monoid<>(1L, (a, b) -> a * b % Main.mod);
+
+        static Monoid<Long> GCD = new Monoid<>(0L,(a, b) -> {
+            if (b == 0) {
+                return a;
+            }
+            while (a % b != 0) {
+                long t = a % b;
+                a = b;
+                b = t;
+            }
+            return b;
+        });
+        static Monoid<Long> LCM = new Monoid<>(1L,(a, b) -> (a * b) / GCD.operator(a, b));
+        static Monoid<Long> XOR = new Monoid<>(0L, (a, b) -> a ^ b);
     }
 }
