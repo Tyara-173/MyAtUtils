@@ -3,7 +3,7 @@ class SegmentTree<T>{
     private final List<T> dat;
     private final Monoid<T> monoid;
 
-    SegmentTree(int n,BinaryOperator<T> operator,T identity){
+    SegmentTree(int n,T identity,BinaryOperator<T> operator){
         this.size = Integer.highestOneBit(n * 2 - 1);
         this.dat = new ArrayList<>();
         for (int i = 0; i < this.size*2; i++) {
