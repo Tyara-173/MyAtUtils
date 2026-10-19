@@ -20,9 +20,10 @@ class LazySegmentTree<T,U>{
         this.modifier = modifier;
     }
 
-    LazySegmentTree(int n, Monoid<T> monoid, Monoid<U> operatorMonoid, Modifier<T,U> modifier, T[] a){
+    LazySegmentTree(int n, Monoid<T> monoid, Monoid<U> operatorMonoid, Modifier<T,U> modifier, U[] a){
         this(n,monoid,operatorMonoid,modifier);
         for (int i = 0; i < n; i++) {
+            this.update(i,i+1,a[i]);
         }
     }
 
