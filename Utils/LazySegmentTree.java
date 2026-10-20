@@ -1,4 +1,3 @@
-// バグってるかも
 class LazySegmentTree<T,U>{
     private final int size;
     private final List<T> dat;
@@ -123,7 +122,7 @@ class LazySegmentTree<T,U>{
     static LazySegmentTree<Long, Long> createRSQMAX(int n){
         return new LazySegmentTree<>(
                 n,
-                Monoid.MAX,
+                new Monoid<>(0L,Long::max),
                 Monoid.SUM,
                 (t, u, len) -> t + u
         );
@@ -146,7 +145,7 @@ class LazySegmentTree<T,U>{
     static LazySegmentTree<Long, Long> createRSQMIN(int n){
         return new LazySegmentTree<>(
                 n,
-                Monoid.MIN,
+                new Monoid<>(0L,Long::min),
                 Monoid.SUM,
                 (t, u, len) -> t + u
         );
