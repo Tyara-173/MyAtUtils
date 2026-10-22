@@ -1,3 +1,4 @@
+// by https://github.com/Tyara-173/MyAtUtils/blob/main/Utils/LazySegmentTreeLong.java
 class LazySegmentTreeLong {
     private static final long MOD = 998244353;
     private static final byte NONE = 0, ADD = 1, SET = 2;
