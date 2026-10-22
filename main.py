@@ -37,6 +37,7 @@ with ui.card():
     with ui.row():
         ui.button('セグ木', on_click=lambda: copy('SegmentTree'))
         ui.button('遅延セグ木', on_click=lambda: copy('LazySegmentTree'))
+        ui.button('Long限定遅延セグ木', on_click=lambda: copy('LazySegmentTreeLong'))
         ui.button('UnionFind', on_click=lambda: copy('UnionFind'))
         ui.button('BIT', on_click=lambda: copy('BIT'))
         ui.button('Trie木', on_click=lambda: copy('Trie'))

@@ -28,7 +28,6 @@ class LazySegmentTree<T,U>{
             this.dat.set(i, monoid.operator(this.dat.get(i * 2 + 1), this.dat.get(i * 2 + 2)));
         }
     }
-    }
 
     void eval(int k,int len) {
         if (lazy.get(k).equals(operatorMonoid.identity())) return;
