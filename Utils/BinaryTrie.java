@@ -210,6 +210,7 @@ class BinaryTrie{
         return root.sum;
     }
 
+    // sum: sitakara i ko
     long sum(int i) {
         if (i <= 0) return 0;
         if (i >= size()) return root.sum;
