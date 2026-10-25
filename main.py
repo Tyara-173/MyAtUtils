@@ -65,6 +65,9 @@ with ui.card():
         ui.button('エラトステネスの篩', on_click=lambda: copy('sieve'))
         ui.button('素因数分解', on_click=lambda: copy('Prime_Factorize'))
         ui.button('POW', on_click=lambda: copy('pow'))
+    with ui.row():
+        ui.button('偏角ソート用Point', on_click=lambda: copy('AnglePoint'))
+        
 
 
 with ui.card():
