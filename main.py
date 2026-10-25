@@ -78,4 +78,16 @@ with ui.card():
         ui.button('要素数Map', on_click=lambda: copy('MapUtil'))
 
 
+with ui.card():
+    ui.label('文字列系')
+    with ui.row():
+        ui.button('RollingHash', on_click=lambda: copy('RollingHash'))
+        ui.button('Z-algorithm', on_click=lambda: copy('Z_algorithm'))
+        
+
+with ui.card():
+    ui.label('テクニック')
+    with ui.row():
+        ui.button('ダブリング', on_click=lambda: copy('BinarySearch'))
+
 ui.run()
