@@ -3,22 +3,23 @@ class SegmentTree<T>{
     private final List<T> dat;
     private final Monoid<T> monoid;
 
-    SegmentTree(int n,T identity,BinaryOperator<T> operator){
-        this.size = Integer.highestOneBit(n * 2 - 1);
-        this.dat = new ArrayList<>();
-        for (int i = 0; i < this.size*2; i++) {
-            dat.add(identity);
-        }
-        monoid = new Monoid<>(identity,operator);
-    }
-
-    SegmentTree(int n,Monoid<T> monoid){
+    SegmentTree(int n, Monoid<T> monoid){
         this.size = Integer.highestOneBit(n * 2 - 1);
         this.dat = new ArrayList<>();
         for (int i = 0; i < this.size*2; i++) {
             dat.add(monoid.identity());
         }
         this.monoid = monoid;
+    }
+
+    SegmentTree(int n, Monoid<T> monoid, IntFunction<T> initFunc){
+        this(n,monoid);
+        for (int i = 0; i < n; i++) {
+            dat.set(i+size-1,initFunc.apply(i));
+        }
+        for (int i = size-2; i >= 0; i--) {
+            dat.set(i,monoid.operator(dat.get(i*2+1),dat.get(i*2+2)));
+        }
     }
 
     void update(int index,T x){

@@ -1,3 +1,5 @@
+import java.util.function.IntFunction;
+
 class LazySegmentTree<T,U>{
     private final int size;
     private final List<T> dat;
@@ -23,6 +25,16 @@ class LazySegmentTree<T,U>{
         this(n,monoid,operatorMonoid,modifier);
         for (int i = 0; i < n; i++) {
             this.dat.set(size+i-1,a[i]);
+        }
+        for (int i = size - 2; i >= 0; i--) {
+            this.dat.set(i, monoid.operator(this.dat.get(i * 2 + 1), this.dat.get(i * 2 + 2)));
+        }
+    }
+
+    LazySegmentTree(int n, Monoid<T> monoid, Monoid<U> operatorMonoid, Modifier<T,U> modifier, IntFunction<T> initFunc){
+        this(n,monoid,operatorMonoid,modifier);
+        for (int i = 0; i < n; i++) {
+            this.dat.set(size+i-1,initFunc.apply(i));
         }
         for (int i = size - 2; i >= 0; i--) {
             this.dat.set(i, monoid.operator(this.dat.get(i * 2 + 1), this.dat.get(i * 2 + 2)));
